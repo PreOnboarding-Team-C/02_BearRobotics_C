@@ -26,4 +26,7 @@
 
 # 패키지 목록을 requirements.txt에 저장
 > pip freeze > requirements.txt
+
+# requirements.txt 패키지 설치
+> pip3 install -r requirements.txt
 ```
