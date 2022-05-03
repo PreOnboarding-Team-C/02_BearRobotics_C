@@ -6,6 +6,10 @@ from utils.time_stamp import TimeStampModel
 
 
 class Pos(TimeStampModel):
+    '''
+    Assignee : 장우경
+    Reviewer : 홍은비, 진병수, 김수빈
+    '''
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
     menu = models.ManyToManyField(Menu)
     number_of_party = models.PositiveSmallIntegerField()
