@@ -1,15 +1,8 @@
 from django.db import models
+
 from apps.restaurants.models import Restaurant
+from apps.menu.models import Menu
 from utils.time_stamp import TimeStampModel
-
-
-class Menu(models.Model):
-    restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    name = models.CharField(max_length=50)
-    price = models.PositiveSmallIntegerField()
-
-    class Meta:
-        db_table = 'menus'
 
 
 class Pos(TimeStampModel):
