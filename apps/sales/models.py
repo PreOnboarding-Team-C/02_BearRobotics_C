@@ -16,4 +16,8 @@ class Pos(TimeStampModel):
     payment = models.CharField(max_length=30)
     
     class Meta:
+        verbose_name_plural = "POS목록"
         db_table = 'pos'
+
+    def __str__(self) -> str:
+        return self.restaurant

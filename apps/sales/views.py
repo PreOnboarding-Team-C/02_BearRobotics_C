@@ -12,7 +12,7 @@ from rest_framework import status
 from django.http import Http404
 
 # Pos의 목록을 보여주는 역할
-class PosList(APIView):
+class PosListAPIView(APIView):
     '''
     Assignee : 진병수
     Reviewer : 
@@ -22,7 +22,7 @@ class PosList(APIView):
         Poses = Pos.objects.all()
         # 여러 개의 객체를 serialization하기 위해 many=True로 설정
         serializer = PosSerializer(Poses, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     # 새로운 Pos를 생성할 때
     def post(self, request):
@@ -34,7 +34,7 @@ class PosList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Pos의 detail을 보여주는 역할
-class PosDetail(APIView):
+class PosDetailAPIView(APIView):
     '''
     Assignee : 진병수
     Reviewer : 
@@ -42,7 +42,7 @@ class PosDetail(APIView):
     # Pos 객체 가져오기
     def get_object(self, pk):
         try:
-            return Pos.objects.get(pk=pk)
+            return Pos.objects.get(pk=pk, status=status.HTTP_200_OK)
         except Pos.DoesNotExist:
             raise Http404
     
@@ -51,12 +51,12 @@ class PosDetail(APIView):
         pos = self.get_object(pk)
         serializer = PosSerializer(pos)
 
-        return Response(serializer.data)
+        return Response(serializer.datam, status=status.HTTP_200_OK)
 
     # 특정 Pos의 deatail 수정하기
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         pos = self.get_object(pk)
-        serializer = BlogSerializer(blog, data=request.data) 
+        serializer = PosSerializer(pos, data=request.data, partial=True) 
 
         if serializer.is_valid():
             serializer.save()
