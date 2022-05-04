@@ -8,7 +8,7 @@ from .models import Menu
 class MenuListAPIView(APIView):
     """
         Asignee: 홍은비
-        Reviewer: -
+        Reviewer: 장우경
     """
     def get(self, request):
         serializer = MenuSerializer(Menu.objects.all(), many=True)
@@ -26,22 +26,22 @@ class MenuListAPIView(APIView):
 class MenuDetailAPIView(APIView):
     """
         Asignee: 홍은비
-        Reviewer: -
+        Reviewer: 장우경
     """
     def get_object(self, pk):
         return get_object_or_404(Menu, pk=pk)
     
-    def get(self, request, pk, form=None):
+    def get(self, request, pk):
         menu = self.get_object(pk)
         serializer = MenuSerializer(menu)
-        return Response(serializer.data)
+        return Response(serializer.data, status=200, partial=True)
 
-    def put(self, request, pk):
+    def patch(self, request, pk):
         menu = self.get_object(pk)
         serializer = MenuSerializer(menu, data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return Response(serializer.data)
+            return Response(serializer.data, status=200)
         return Response(serializer.errors, status=400)
     
     def delete(self, request, pk):
