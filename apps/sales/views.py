@@ -56,7 +56,7 @@ class PosDetailAPIView(APIView):
     # 특정 Pos의 deatail 수정하기
     def put(self, request, pk, format=None):
         pos = self.get_object(pk)
-        serializer = BlogSerializer(blog, data=request.data) 
+        serializer = PosSerializer(pos, data=request.data, partial=True) 
 
         if serializer.is_valid():
             serializer.save()
