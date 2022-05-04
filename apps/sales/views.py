@@ -22,7 +22,7 @@ class PosListAPIView(APIView):
         Poses = Pos.objects.all()
         # 여러 개의 객체를 serialization하기 위해 many=True로 설정
         serializer = PosSerializer(Poses, many=True)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
     # 새로운 Pos를 생성할 때
     def post(self, request):
@@ -42,7 +42,7 @@ class PosDetailAPIView(APIView):
     # Pos 객체 가져오기
     def get_object(self, pk):
         try:
-            return Pos.objects.get(pk=pk)
+            return Pos.objects.get(pk=pk, status=status.HTTP_200_OK)
         except Pos.DoesNotExist:
             raise Http404
     
@@ -51,10 +51,10 @@ class PosDetailAPIView(APIView):
         pos = self.get_object(pk)
         serializer = PosSerializer(pos)
 
-        return Response(serializer.data)
+        return Response(serializer.datam, status=status.HTTP_200_OK)
 
     # 특정 Pos의 deatail 수정하기
-    def put(self, request, pk, format=None):
+    def patch(self, request, pk, format=None):
         pos = self.get_object(pk)
         serializer = PosSerializer(pos, data=request.data, partial=True) 
 
