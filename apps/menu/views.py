@@ -34,11 +34,11 @@ class MenuDetailAPIView(APIView):
     def get(self, request, pk):
         menu = self.get_object(pk)
         serializer = MenuSerializer(menu)
-        return Response(serializer.data, status=200, partial=True)
+        return Response(serializer.data, status=200)
 
     def patch(self, request, pk):
         menu = self.get_object(pk)
-        serializer = MenuSerializer(menu, data=request.data)
+        serializer = MenuSerializer(menu, data=request.data, partial=True)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data, status=200)
