@@ -13,4 +13,8 @@ class Menu(models.Model):
     price = models.PositiveSmallIntegerField()
 
     class Meta:
+        verbose_name_plural = "메뉴목록"
         db_table = 'menus'
+
+    def __str__(self) -> str:
+        return self.name
