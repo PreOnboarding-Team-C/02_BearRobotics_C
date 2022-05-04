@@ -6,7 +6,7 @@ from rest_framework import serializers
 class MenuSerializer(serializers.ModelSerializer):
     """
         Asignee: 홍은비
-        Reviewer: -
+        Reviewer: 진병수
     """
     class Meta:
         model = Menu
