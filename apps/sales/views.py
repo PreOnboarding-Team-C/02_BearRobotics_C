@@ -12,7 +12,7 @@ from rest_framework import status
 from django.http import Http404
 
 # Pos의 목록을 보여주는 역할
-class PosList(APIView):
+class PosListAPIView(APIView):
     '''
     Assignee : 진병수
     Reviewer : 
@@ -34,7 +34,7 @@ class PosList(APIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 # Pos의 detail을 보여주는 역할
-class PosDetail(APIView):
+class PosDetailAPIView(APIView):
     '''
     Assignee : 진병수
     Reviewer : 
