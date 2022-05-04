@@ -4,11 +4,19 @@ from .models import Restaurant
 from .serializer import RestaurantSerializer
 
 
-class RestaurantListCreateView(generics.ListCreateAPIView):
+class RestaurantListAPIView(generics.ListCreateAPIView):
+    '''
+    Assignee : 장우경
+    Reviewer : 홍은비
+    '''
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
-    
-    print(serializer_class)
 
-    print('안 되나요??')
-    
+
+class RestaurantDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
+    '''
+    Assignee : 장우경
+    Reviewer : -
+    '''
+    queryset = Restaurant.objects.all()
+    serializer_class = RestaurantSerializer
