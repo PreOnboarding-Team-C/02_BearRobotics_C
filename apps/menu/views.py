@@ -47,4 +47,4 @@ class MenuDetailAPIView(APIView):
     def delete(self, request, pk):
         menu = self.get_object(pk)
         menu.delete()
-        return Response(status=200)
+        return Response(status=204)
