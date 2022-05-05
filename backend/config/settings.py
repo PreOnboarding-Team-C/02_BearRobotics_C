@@ -1,6 +1,11 @@
 from pathlib import Path
 import pymysql
 import os
+import dotenv
+
+
+# AttributeError: 'NoneType' object has no attribute 'startswith'
+dotenv.read_dotenv('./.env')
 
 # MySQL 연결
 pymysql.install_as_MySQLdb()
