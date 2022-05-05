@@ -65,5 +65,29 @@ class RestaurantPaymentKPIView(APIView):
             pos = pos.filter(number_of_party=party)
 
 
+
+        window_size = request.GET.get('window_size', None)
+        window_type = ['HOUR', 'DAY', 'WEEK', 'MONTH', 'YEAR']
+
+        if not window_size in window_type:
+            return Response('[window size 타입 오류] window size는 HOUR, DAY, WEEK, MONTH, YEAR 중 하나여야합니다.', status=404)
+
+        if window_size == 'HOUR':
+            pos = pos.annotate(window_size=TruncHour('created_datetime')).values('window_size')\
+                .annotate(count=Count('payment')).values('window_size', 'payment', 'count')
+            print(pos)
+        elif window_size == 'DAY':
+            pos = pos.annotate(window_size=TruncDay('created_datetime')).values('window_size')\
+                .annotate(count=Count('payment')).values('window_size', 'payment', 'count')
+        elif window_size == 'WEEK':
+            pos = pos.annotate(window_size=TruncWeek('created_datetime')).values('window_size')\
+                .annotate(count=Count('payment')).values('window_size', 'payment', 'count')
+        elif window_size == 'MONTH':
+            pos = pos.annotate(window_size=TruncMonth('created_datetime')).values('window_size')\
+                .annotate(count=Count('payment')).values('window_size', 'payment', 'count')
+        elif window_size == 'YEAR':
+            pos = pos.annotate(window_size=TruncYear('created_datetime')).values('window_size')\
+                .annotate(count=Count('payment')).values('window_size', 'payment', 'count')
+
         serializer = RestraurantPaymentKPISerializer(pos, many=True)
         return Response(serializer.data, status=200)
