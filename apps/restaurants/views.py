@@ -49,7 +49,16 @@ class RestaurantPaymentKPIView(APIView):
             except ValueError:
                 return Response('[날짜 형식 오류] 날짜를 yyyy-mm-dd 형식으로 요청해주십시오.', status=404)
 
-        
+        # # Filter 2: Price range
+        min_price = request.GET.get('min_price', None)
+        max_price = request.GET.get('max_price', None)
+
+        if min_price and max_price:
+            pos = pos.annotate(total_price=Sum('menu__price')).values('id', 'total_price')\
+                .filter(total_price__gte=min_price, total_price__lte=max_price)
+
+
+
 
         serializer = RestraurantPaymentKPISerializer(pos, many=True)
         return Response(serializer.data, status=200)
