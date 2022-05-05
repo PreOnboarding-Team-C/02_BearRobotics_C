@@ -50,7 +50,8 @@ class RestaurantPaymentKPIView(APIView):
                 return Response('[날짜 형식 오류] 날짜를 yyyy-mm-dd 형식으로 요청해주십시오.', status=404)
 
 
-        # # Filter 2: Price range
+        # Filter 2: Price range
+
         min_price = request.GET.get('min_price', None)
         max_price = request.GET.get('max_price', None)
 
@@ -59,12 +60,18 @@ class RestaurantPaymentKPIView(APIView):
                 .filter(total_price__gte=min_price, total_price__lte=max_price)
 
 
-        # # Filter 3: Number of party
-        party = request.GET.get('party', None)
-        if party:
-            pos = pos.filter(number_of_party=party)
+        # Filter 3: Number of party
+
+        min_party = request.GET.get('min_party', None)
+        max_party = request.GET.get('max_party', None)
+        if min_party and max_party:
+            pos = pos.filter(number_of_party__gte=min_party, num_party__lte=max_party)
+
+        # Filter 4: Restaurant group
 
 
+
+        # HOUR, DAY, WEEK, MONTH, YEAR
 
         window_size = request.GET.get('window_size', None)
         window_type = ['HOUR', 'DAY', 'WEEK', 'MONTH', 'YEAR']
