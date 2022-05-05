@@ -65,7 +65,7 @@ class RestaurantPaymentKPIView(APIView):
         min_party = request.GET.get('min_party', None)
         max_party = request.GET.get('max_party', None)
         if min_party and max_party:
-            pos = pos.filter(number_of_party__gte=min_party, num_party__lte=max_party)
+            pos = pos.filter(number_of_party__gte=min_party, number_of_party__lte=max_party)
 
         # Filter 4: Restaurant group
 
