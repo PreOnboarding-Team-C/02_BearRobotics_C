@@ -1,8 +1,13 @@
+from django.shortcuts import get_object_or_404
 from rest_framework import generics
-
+from rest_framework.views import APIView
+from rest_framework.response import Response
+from apps.sales.models import Pos
 from .models import Restaurant
-from .serializer import RestaurantSerializer
-
+from .serializer import RestaurantSerializer, RestraurantPaymentKPISerializer
+from datetime import datetime
+from django.db.models.functions import TruncHour, TruncWeek, TruncDay, TruncMonth, TruncYear
+from django.db.models import Count, Q, Sum
 
 # Restaurnat 데이터 생성 및 전체 리스트 조회 API
 class RestaurantListAPIView(generics.ListCreateAPIView):
@@ -22,3 +27,29 @@ class RestaurantDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     '''
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
+
+
+class RestaurantPaymentKPIView(APIView):
+    def get(self, request, pk):
+        pos = Pos.objects.filter(restaurant_id=pk)
+
+        if not pos:
+            return Response('해당 레스토랑의 pos 사용 이력이 존재하지 않습니다.', status=404)
+
+        
+        # Filter 1: Start time/ End time
+
+        start_time = request.GET.get('start_time', None)
+        end_time = request.GET.get('end_time', None)
+        if start_time and end_time:
+            try:
+                start_time = datetime.strptime(start_time, '%Y-%m-%d').date()
+                end_time = datetime.strptime(end_time, '%Y-%m-%d').date()
+                pos = pos.filter(Q(created_datetime__range=(start_time,end_time)) | Q(created_datetime__icontains=end_time))
+            except ValueError:
+                return Response('[날짜 형식 오류] 날짜를 yyyy-mm-dd 형식으로 요청해주십시오.', status=404)
+
+        
+
+        serializer = RestraurantPaymentKPISerializer(pos, many=True)
+        return Response(serializer.data, status=200)
