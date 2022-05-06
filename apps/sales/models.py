@@ -11,7 +11,7 @@ class Pos(TimeStampModel):
     Reviewer : 홍은비, 진병수, 김수빈
     '''
     restaurant = models.ForeignKey(Restaurant, on_delete=models.CASCADE)
-    menu = models.ManyToManyField(Menu)
+    menu = models.ManyToManyField(Menu, related_name="order_menu")
     number_of_party = models.PositiveSmallIntegerField()
     payment = models.CharField(max_length=30)
     
@@ -19,5 +19,5 @@ class Pos(TimeStampModel):
         verbose_name_plural = "POS목록"
         db_table = 'pos'
 
-    def __str__(self) -> str:
-        return self.restaurant
+    def __str__(self):
+        return self.payment

@@ -14,7 +14,7 @@ class Group(models.Model):
         verbose_name_plural = "그룹목록"
         db_table = 'groups'
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
 
 
@@ -32,5 +32,5 @@ class Restaurant(TimeStampModel):
         verbose_name_plural = "식당목록"
         db_table = 'restaurants'
 
-    def __str__(self) -> str:
-        return self.group
+    def __str__(self):
+        return self.name
