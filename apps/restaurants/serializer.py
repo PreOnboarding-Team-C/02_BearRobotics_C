@@ -22,6 +22,8 @@ class RestaurantSerializer(ModelSerializer):
 #     Assignee : 장우경
 #     Reviewer : -
 #     '''
+#     group_id = ReadOnlyField(source='group.id')
+    
 #     class Meta:
 #         model = Pos
 #         fields = '__all__'

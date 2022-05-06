@@ -35,13 +35,13 @@ class KPIPerRestaurantAPIView(APIView):
     Reviewer : 홍은비, 진병수
     '''
     def get(self, request):
-        start_time = datetime.strptime(request.GET.get('start-time', None), '%Y-%m-%d').date()
-        end_time = datetime.strptime(request.GET.get('end-time', None), '%Y-%m-%d').date()
+        start_time = datetime.strptime(request.GET.get('start_time', None), '%Y-%m-%d').date()
+        end_time = datetime.strptime(request.GET.get('end_time', None), '%Y-%m-%d').date()
         
-        min_price = request.GET.get('min-price', None)
-        max_price = request.GET.get('max-price', None)
-        number_of_party = request.GET.get('number-of-party', None)
-        group_id = request.GET.get('group-id', None)
+        min_price = request.GET.get('min_price', None)
+        max_price = request.GET.get('max_price', None)
+        number_of_party = request.GET.get('number_of_party', None)
+        group_id = request.GET.get('group_id', None)
     
         # pos_time = Pos.objects.filter(created_datetime__range=[start_time, end_time])
         # print(pos_time)
@@ -58,7 +58,7 @@ class KPIPerRestaurantAPIView(APIView):
             q &= Q(number_of_party=number_of_party)
             
         if group_id:
-            q &= Q(group=group_id)
+            q &= Q(restaurant__group=group_id)
         
         if start_time:
             q &= Q(created_datetime__gte=start_time)
