@@ -17,13 +17,15 @@ class RestaurantSerializer(ModelSerializer):
         fields = '__all__'
 
 
-# class PosSerializer(ModelSerializer):
-#     '''
-#     Assignee : 장우경
-#     Reviewer : -
-#     '''
-#     group_id = ReadOnlyField(source='group.id')
+class PosSerializer(ModelSerializer):
+    '''
+    Assignee : 장우경
+    Reviewer : -
+    '''
+    group_id = ReadOnlyField(source='restaurant_id__group')
+    restaurant_id = ReadOnlyField(source='restaurant')
+    count = ReadOnlyField(source='num_count')
     
-#     class Meta:
-#         model = Pos
-#         fields = '__all__'
+    class Meta:
+        model = Pos
+        fields = ['number_of_party', 'restaurant_id', 'group_id', 'count']

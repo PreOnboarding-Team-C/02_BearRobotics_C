@@ -1,12 +1,14 @@
 from datetime import datetime
 from django.db.models import Count
-from rest_framework import generics
+from rest_framework import generics, status
 from rest_framework.views import APIView
 from django.db.models import Q
+from rest_framework.response import Response
 
 from apps.sales.models import Pos
+from apps.restaurants.models import Group
 from .models import Restaurant
-from .serializer import RestaurantSerializer
+from .serializer import PosSerializer, RestaurantSerializer
 
 
 # Restaurnat 데이터 생성 및 전체 리스트 조회 API
@@ -66,9 +68,8 @@ class KPIPerRestaurantAPIView(APIView):
         if end_time:
             q &= Q(created_datetime__lte=end_time)
         
-        
-        # list = Pos.objects.filter(created_datetime__range=[start_time, end_time]).values('number_of_party').annotate(count=Count('number_of_party')).values('restaurant_id', 'number_of_party', 'count')
-        # print(list)
-        
-        pos_queryset = Pos.objects.filter(q).values('number_of_party').annotate(count=Count('number_of_party')).values('restaurant_id', 'number_of_party', 'count')
+        pos_queryset = Pos.objects.filter(q).values('number_of_party').annotate(num_count=Count('number_of_party')).values('restaurant', 'number_of_party', 'num_count', 'restaurant_id__group')
         print(pos_queryset)
+        
+        serializer = PosSerializer(pos_queryset, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
