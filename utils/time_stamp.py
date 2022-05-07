@@ -3,7 +3,7 @@ from django.db.models import (
     DateTimeField,
     Sum,
     Avg,
-    Count
+    Count,
 )
 
 from django.db.models.functions import (
@@ -14,6 +14,8 @@ from django.db.models.functions import (
     ExtractDay,
     ExtractHour,
 )
+
+
 class TimeStampModel(Model):
     created_datetime = DateTimeField(auto_now_add=True)
     
