@@ -8,6 +8,7 @@ from .models import Restaurant
 from .serializer import RestaurantSerializer, RestraurantPaymentKPISerializer
 from datetime import datetime
 from django.db.models.functions import TruncHour, TruncWeek, TruncDay, TruncMonth, TruncYear, Cast, Substr
+from utils.time_stamp import AggByDateTime
 from django.db.models import Count, Q, Sum
 
 # Restaurnat 데이터 생성 및 전체 리스트 조회 API
@@ -31,18 +32,15 @@ class RestaurantDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 
 
 class RestaurantPaymentKPIView(APIView):
+    '''
+    Assignee : 홍은비
+    Reviewer : -
+    '''
     def get(self, request, pk):
-        # pos = Pos.objects.filter(restaurant_id=pk)
         pos = Pos.objects.all()
-
-        # if not pos:
-        #     return Response('해당 레스토랑의 pos 사용 이력이 존재하지 않습니다.', status=404)
-
-        
-        # Filter 1: Start time/ End time
-
         start_time = request.GET.get('start_time', None)
         end_time = request.GET.get('end_time', None)
+
         if start_time and end_time:
             try:
                 start_time = datetime.strptime(start_time, '%Y-%m-%d').date()
@@ -72,9 +70,11 @@ class RestaurantPaymentKPIView(APIView):
 
         # Filter 4: Restaurant group
 
+        
         group = request.GET.get('group', None)
         if group:
             pos = pos.filter(restaurant__group__name=group)
+            
 
         # HOUR, DAY, WEEK, MONTH, YEAR
 
@@ -91,6 +91,7 @@ class RestaurantPaymentKPIView(APIView):
                         output_field=CharField()), 12, 2)
                     ).values('hour')\
                 .annotate(count=Count('payment')).values('restaurant_id', 'payment', 'count', 'hour')
+
         elif window_size == 'DAY':
             pos = pos.annotate(day=
                 Substr(
@@ -98,9 +99,11 @@ class RestaurantPaymentKPIView(APIView):
                         output_field=CharField()), 9, 2)
                     ).values('day')\
                 .annotate(count=Count('payment')).values('restaurant_id', 'payment', 'count', 'day')
+
         elif window_size == 'WEEK':
             pos = pos.annotate(window_size=TruncWeek('created_datetime')).values('window_size')\
                 .annotate(count=Count('payment')).values('window_size', 'restaurant_id', 'payment', 'count')
+
         elif window_size == 'MONTH':
             pos = pos.annotate(month=
                 Substr(
@@ -108,13 +111,17 @@ class RestaurantPaymentKPIView(APIView):
                         output_field=CharField()), 6, 2)
                     ).values('month')\
                 .annotate(count=Count('payment')).values('restaurant_id', 'payment', 'count', 'month')
-
-        # elif window_size == 'MONTH':
-        #     pos = pos.annotate(window_size=TruncMonth('created_datetime')).values('window_size')\
-        #         .annotate(count=Count('payment')).values('window_size', 'restaurant_id', 'payment', 'count')
+                
         elif window_size == 'YEAR':
-            pos = pos.annotate(window_size=TruncYear('created_datetime')).values('window_size')\
-                .annotate(count=Count('payment')).values('window_size', 'restaurant_id', 'payment', 'count')
+            pos = pos.annotate(year=
+                Substr(
+                    Cast(TruncMonth('created_datetime', output_field=DateTimeField()),
+                        output_field=CharField()), 1, 4)
+                    ).values('year')\
+                .annotate(count=Count('payment')).values('restaurant_id', 'payment', 'count', 'year')
 
         serializer = RestraurantPaymentKPISerializer(pos, many=True)
         return Response(serializer.data, status=200)
+        
+
+        
