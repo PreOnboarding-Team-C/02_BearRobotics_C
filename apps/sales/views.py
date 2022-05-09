@@ -17,9 +17,6 @@ from django.db.models.functions import TruncHour, TruncWeek, TruncDay, TruncMont
 
 import datetime
 
-# def Date(str):
-#     return datetime.datetime.strptime(str, '%Y-%m-%d').date()
-
 # Create your views here.
 # Pos의 목록을 보여주는 역할
 class PosListAPIView(APIView):
@@ -82,13 +79,12 @@ class PosDetailAPIView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)   
 
 
-# restaurants 는 FK 로 연결되어 있고
-# menu 는 ManytoMany 로 연결되어 있습니다.
-# 이 상태에서 해당 컬럼의 내용으로 어떻게 검색해서 보여줄 것인가?
-
-
-
 class PosSearchAPIView(APIView):
+    '''
+    Assignee : 진병수
+    Reviewer : 
+    '''
+
     # Pos 객체 가져오기
     def get_object(self):
         try:
@@ -130,9 +126,6 @@ class PosSearchAPIView(APIView):
 
         if menu:
             q &= Q(menu = menu)
-
-        # if num:
-        #     q &= Q(number_of_party = num)
 
         if payment:
             q &= Q(payment = payment)
@@ -224,15 +217,6 @@ class PosSearchAPIView(APIView):
                                 .values('restaurant_id', 'payment', 'count', 'year')
                 )
 
-        
-        # pos = (
-        #     Pos
-        #     .objects
-        #     .filter(q)
-        #     .annotate(date = window_type[window_size])
-        #     .values('date')
-        #     )
-
 
         # 필터2 : 날짜 범위로
         if start_time and end_time:
@@ -286,7 +270,4 @@ class PosSearchAPIView(APIView):
                 .filter(number_of_party__gte=min_party, number_of_party__lte=max_party)
                 )
 
-    
-        # objs = Pos.objects.filter(q)
-        # serializser = PosSearchSerializer(pos, many=True)
         return Response(pos, status=status.HTTP_200_OK)
