@@ -34,10 +34,13 @@ class RestaurantDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
 class RestaurantPaymentKPIView(APIView):
     '''
     Assignee : 홍은비
-    Reviewer : -
+    Reviewer : 장우경, 진병수, 김수빈
     '''
     def get(self, request, pk):
         pos = Pos.objects.all()
+        
+        # Filter 1: Start Time / End Time
+        
         start_time = request.GET.get('start_time', None)
         end_time = request.GET.get('end_time', None)
 
@@ -45,6 +48,7 @@ class RestaurantPaymentKPIView(APIView):
             try:
                 start_time = datetime.strptime(start_time, '%Y-%m-%d').date()
                 end_time = datetime.strptime(end_time, '%Y-%m-%d').date()
+                # end_time 은 포함되지 않아 icontains 조건을 추가해 임의로 포함시킴.
                 pos = pos.filter(Q(created_datetime__range=(start_time,end_time)) | Q(created_datetime__icontains=end_time))
             except ValueError:
                 return Response('[날짜 형식 오류] 날짜를 yyyy-mm-dd 형식으로 요청해주십시오.', status=404)
@@ -69,7 +73,6 @@ class RestaurantPaymentKPIView(APIView):
 
 
         # Filter 4: Restaurant group
-
         
         group = request.GET.get('group', None)
         if group:
@@ -95,7 +98,7 @@ class RestaurantPaymentKPIView(APIView):
         elif window_size == 'DAY':
             pos = pos.annotate(day=
                 Substr(
-                    Cast(TruncHour('created_datetime', output_field=DateTimeField()),
+                    Cast(TruncDay('created_datetime', output_field=DateTimeField()),
                         output_field=CharField()), 9, 2)
                     ).values('day')\
                 .annotate(count=Count('payment')).values('restaurant_id', 'payment', 'count', 'day')
@@ -120,8 +123,7 @@ class RestaurantPaymentKPIView(APIView):
                     ).values('year')\
                 .annotate(count=Count('payment')).values('restaurant_id', 'payment', 'count', 'year')
 
+            
         serializer = RestraurantPaymentKPISerializer(pos, many=True)
         return Response(serializer.data, status=200)
-        
-
         
