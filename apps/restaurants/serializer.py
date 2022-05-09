@@ -1,7 +1,6 @@
 from rest_framework.serializers import ModelSerializer, ReadOnlyField, SerializerMethodField
 
 from apps.sales.models import Pos
-
 from .models import Restaurant
 
 
@@ -17,6 +16,19 @@ class RestaurantSerializer(ModelSerializer):
         fields = '__all__'
 
 
+class PosSerializer(RestaurantSerializer):
+    '''
+    Assignee : 장우경
+    Reviewer : -
+    '''
+    group_id = ReadOnlyField(source='restaurant__group')
+    count = ReadOnlyField(source='num_count')
+    
+    class Meta:
+        model = Pos
+        fields = ['number_of_party', 'restaurant_id', 'group_id', 'count']
+
+
 class RestraurantPaymentKPISerializer(ModelSerializer):
     count = ReadOnlyField()
     # window_size = ReadOnlyField()
@@ -26,7 +38,6 @@ class RestraurantPaymentKPISerializer(ModelSerializer):
     week = ReadOnlyField()
     month = ReadOnlyField()
     year = ReadOnlyField()
-
 
     class Meta:
         model = Pos
