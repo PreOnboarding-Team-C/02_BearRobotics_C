@@ -6,7 +6,6 @@ from django.db.models import Q
 from rest_framework.response import Response
 
 from apps.sales.models import Pos
-from apps.restaurants.models import Group
 from .models import Restaurant
 from .serializer import PosSerializer, RestaurantSerializer
 
@@ -31,53 +30,41 @@ class RestaurantDetailAPIView(generics.RetrieveUpdateDestroyAPIView):
     serializer_class = RestaurantSerializer
 
 
+# Restaurant별 일행 수에 따른 KPI
 class KPIPerRestaurantAPIView(APIView):
     '''
     Assignee : 장우경
     Reviewer : 홍은비, 진병수
     '''
     def get(self, request):
-        start_time = datetime.strptime(request.GET.get('start_time', None), '%Y-%m-%d').date()
-        end_time = datetime.strptime(request.GET.get('end_time', None), '%Y-%m-%d').date()
-        
-        min_price = request.GET.get('min_price', None)
-        max_price = request.GET.get('max_price', None)
-        number_of_party = request.GET.get('number_of_party', None)
+        try:
+            start_time = datetime.strptime(request.GET.get('start_time', None), '%Y-%m-%d').date()
+            end_time = datetime.strptime(request.GET.get('end_time', None), '%Y-%m-%d').date()
+        except TypeError:
+            return Response({'message': '날짜를 입력해주세요'}, status=status.HTTP_404_NOT_FOUND)
+        min_party = request.GET.get('min_party', None)
+        max_party = request.GET.get('max_party', None)
         group_id = request.GET.get('group_id', None)
-    
-        # pos_time = Pos.objects.filter(created_datetime__range=[start_time, end_time])
-        # print(pos_time)
+        # min_price = request.GET.get('min_price', None)
+        # max_price = request.GET.get('max_price', None)
         
         q = Q()
-        
-        if min_price:
-            q &= Q(menu__price__gte=min_price)
-            
-        if max_price:
-            q &= Q(menu__price__lte=max_price)
-            
-        if number_of_party:
-            q &= Q(number_of_party=number_of_party)
-            
+    
+        # 시간 지정하여 조회    
+        if start_time and end_time:
+            q &= Q(created_datetime__gte=start_time, created_datetime__lte=end_time)
+    
+        # 인원별 조회
+        if min_party and max_party:
+            q &= Q(number_of_party__gte=min_party, number_of_party__lte=max_party)
+
+        # 그룹별 조회
         if group_id:
             q &= Q(restaurant__group=group_id)
-        
-        if start_time:
-            q &= Q(created_datetime__gte=start_time)
-        
-        if end_time:
-            q &= Q(created_datetime__lte=end_time)
-        
-        pos_queryset = Pos.objects.filter(q).values('number_of_party').annotate(num_count=Count('number_of_party')).values('restaurant_id', 'number_of_party', 'num_count', 'restaurant__group')
-        print(pos_queryset)
-        
-        # pos.annotate(month=
-        #         Substr(
-        #             Cast(TruncMonth('created_datetime', output_field=DateTimeField()),
-        #                 output_field=CharField()), 6, 2)
-        #         ).values('month')\
-        #             .annotate(count=Count('payment')).values('restaurant_id', 'payment', 'count', 'month')
-        
-        
+    
+        pos_queryset = Pos.objects.filter(q).values('number_of_party')\
+                        .annotate(num_count=Count('number_of_party'))\
+                        .values('restaurant_id', 'number_of_party', 'num_count', 'restaurant__group')
+    
         serializer = PosSerializer(pos_queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
