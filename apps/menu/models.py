@@ -16,5 +16,5 @@ class Menu(models.Model):
         verbose_name_plural = "메뉴목록"
         db_table = 'menus'
 
-    def __str__(self) -> str:
+    def __str__(self):
         return self.name
