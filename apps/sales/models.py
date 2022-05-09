@@ -20,4 +20,4 @@ class Pos(TimeStampModel):
         db_table = 'pos'
 
     def __str__(self):
-        return self.payment
+        return self.restaurant.name
