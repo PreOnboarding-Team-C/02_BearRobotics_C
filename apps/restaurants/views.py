@@ -1,19 +1,27 @@
 from datetime import datetime
-from django.db.models import Count
+from django.db.models import (
+    Count, 
+    DateTimeField, 
+    CharField,
+    Q,
+    Count,
+    Sum,
+)
+from django.db.models.functions import (
+    Cast,
+    Substr,
+    TruncHour,
+    TruncDay,
+    TruncWeek, 
+    TruncMonth, 
+    TruncYear,
+)
 from rest_framework import generics, status
 from rest_framework.views import APIView
-from django.db.models import Count, Q, Sum
 from rest_framework.response import Response
-from django.db.models import DateField, DateTimeField, CharField
-from django.shortcuts import get_object_or_404
-from rest_framework import generics
-from rest_framework.views import APIView
-from rest_framework.response import Response
-from django.db.models.functions import TruncHour, TruncWeek, TruncDay, TruncMonth, TruncYear, Cast, Substr
-
 from apps.sales.models import Pos
 from .models import Restaurant
-from .serializer import RestaurantSerializer, RestraurantPaymentKPISerializer, PosSerializer
+from .serializer import RestaurantSerializer, RestaurantPaymentKPISerializer, PosSerializer
 
 
 # Restaurnat 데이터 생성 및 전체 리스트 조회 API
@@ -163,11 +171,11 @@ class RestaurantPaymentKPIView(APIView):
         elif window_size == 'YEAR':
             pos = pos.annotate(year=
                 Substr(
-                    Cast(TruncMonth('created_datetime', output_field=DateTimeField()),
+                    Cast(TruncYear('created_datetime', output_field=DateTimeField()),
                         output_field=CharField()), 1, 4)
                     ).values('year')\
                 .annotate(count=Count('payment')).values('restaurant_id', 'payment', 'count', 'year')
 
             
-        serializer = RestraurantPaymentKPISerializer(pos, many=True)
+        serializer = RestaurantPaymentKPISerializer(pos, many=True)
         return Response(serializer.data, status=200)

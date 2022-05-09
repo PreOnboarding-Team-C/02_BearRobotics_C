@@ -29,9 +29,12 @@ class PosSerializer(RestaurantSerializer):
         fields = ['number_of_party', 'restaurant_id', 'group_id', 'count']
 
 
-class RestraurantPaymentKPISerializer(ModelSerializer):
+class RestaurantPaymentKPISerializer(ModelSerializer):
+    '''
+    Assignee : 홍은비
+    Reviewer : 김수빈
+    '''
     count = ReadOnlyField()
-    # window_size = ReadOnlyField()
     total_price = ReadOnlyField()
     hour = ReadOnlyField()
     day = ReadOnlyField()
@@ -41,6 +44,4 @@ class RestraurantPaymentKPISerializer(ModelSerializer):
 
     class Meta:
         model = Pos
-        # fields = ['restaurant_id', 'payment', 'total_price', 'count', 'hour']
         fields = ['restaurant_id', 'payment', 'total_price', 'count',  'hour', 'day', 'week', 'month', 'year']
-        # fields = ['restaurant_id', 'payment', 'total_price', 'count', 'window_size']
