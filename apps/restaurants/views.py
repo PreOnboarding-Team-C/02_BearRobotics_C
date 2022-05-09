@@ -68,8 +68,16 @@ class KPIPerRestaurantAPIView(APIView):
         if end_time:
             q &= Q(created_datetime__lte=end_time)
         
-        pos_queryset = Pos.objects.filter(q).values('number_of_party').annotate(num_count=Count('number_of_party')).values('restaurant', 'number_of_party', 'num_count', 'restaurant_id__group')
+        pos_queryset = Pos.objects.filter(q).values('number_of_party').annotate(num_count=Count('number_of_party')).values('restaurant_id', 'number_of_party', 'num_count', 'restaurant__group')
         print(pos_queryset)
+        
+        # pos.annotate(month=
+        #         Substr(
+        #             Cast(TruncMonth('created_datetime', output_field=DateTimeField()),
+        #                 output_field=CharField()), 6, 2)
+        #         ).values('month')\
+        #             .annotate(count=Count('payment')).values('restaurant_id', 'payment', 'count', 'month')
+        
         
         serializer = PosSerializer(pos_queryset, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)

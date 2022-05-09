@@ -17,13 +17,12 @@ class RestaurantSerializer(ModelSerializer):
         fields = '__all__'
 
 
-class PosSerializer(ModelSerializer):
+class PosSerializer(RestaurantSerializer):
     '''
     Assignee : 장우경
     Reviewer : -
     '''
-    group_id = ReadOnlyField(source='restaurant_id__group')
-    restaurant_id = ReadOnlyField(source='restaurant')
+    group_id = ReadOnlyField(source='restaurant__group')
     count = ReadOnlyField(source='num_count')
     
     class Meta:
