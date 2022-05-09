@@ -28,11 +28,7 @@ class PosSearchSerializer(PosSerializer):
     restaurant = serializers.ReadOnlyField(source='restaurant.name')
     menu_info = MenuSerializer(source='menu', many=True, read_only=True)
     count = serializers.ReadOnlyField()
-    # menu = MenuSerializer(source='pos_menu.id', many=True)
 
-    # print(f"menu 입니다 : {menu}")
-    # pos = Pos.objects.get(pk=1)
-    # temp = pos.menu_set_all()
 
     class Meta:
         model = Pos

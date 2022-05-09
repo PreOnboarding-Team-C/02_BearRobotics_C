@@ -22,7 +22,7 @@ import datetime
 class PosListAPIView(APIView):
     '''
     Assignee : 진병수
-    Reviewer : 
+    Reviewer : -
     '''
     # Pos list를 보여줄 때
     def get(self, request):
@@ -44,7 +44,7 @@ class PosListAPIView(APIView):
 class PosDetailAPIView(APIView):
     '''
     Assignee : 진병수
-    Reviewer : 
+    Reviewer : -
     '''
     # Pos 객체 가져오기
     def get_object(self, pk):
@@ -82,7 +82,7 @@ class PosDetailAPIView(APIView):
 class PosSearchAPIView(APIView):
     '''
     Assignee : 진병수
-    Reviewer : 
+    Reviewer : -
     '''
 
     # Pos 객체 가져오기
