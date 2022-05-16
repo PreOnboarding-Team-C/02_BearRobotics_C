@@ -89,7 +89,7 @@ class RestaurantPaymentKPIView(APIView):
     Assignee : 홍은비
     Reviewer : 장우경, 진병수, 김수빈
     '''
-    def get(self, request, pk):
+    def get(self, request):
         pos = Pos.objects.all()
         
         # Filter 1: Start Time / End Time

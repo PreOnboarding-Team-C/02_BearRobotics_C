@@ -103,4 +103,10 @@
 * 개발 환경 구축, Pos CRUD, KPI - Restaurant(assignee: [@castela0119](https://github.com/castela0119))
 * KPI - Restaurant (assignee: [@AshbeeKim](https://github.com/AshbeeKim))
 
-## 3. API 명세
+## 3. API 명세 (KPI)
+[API Documentation Link](https://documenter.getpostman.com/view/18993145/UyxeonxB)
+
+![kpi payment](https://user-images.githubusercontent.com/75561289/168548116-ca0fe503-988f-42af-9502-3637dc3cd8fd.png)
+![kpi restaurant](https://user-images.githubusercontent.com/75561289/168548208-ec2499ce-5120-4c3b-9995-07c2045de931.png)
+![kpi pos1](https://user-images.githubusercontent.com/75561289/168548273-9cceb6fe-64b1-4314-97e7-d2d9dffd9c84.png)
+![kpi pos2](https://user-images.githubusercontent.com/75561289/168548356-6f4449b6-69f6-4cca-96c3-b2072e6af637.png)
